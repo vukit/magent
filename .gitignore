@@ -1,0 +1,4 @@
+configs/local.json
+temp
+.DS_Store
+.golangci.yml

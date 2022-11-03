@@ -1,0 +1,55 @@
+{
+    "common": {
+        "hostName": "localhost",
+        "privateKey": "/etc/ssl/private/private.key",
+        "debug": false
+    },
+    "sensors": [
+        {
+            "name": "cpu",
+            "enable": true,
+            "metrics": [
+                "usage"
+            ]
+        },
+        {
+            "name": "disk",
+            "enable": true,
+            "metrics": [
+                "size",
+                "avail"
+            ],
+            "devices": [
+                "/",
+                "/home"
+            ]
+        },
+        {
+            "name": "memory",
+            "enable": true,
+            "metrics": [
+                "total",
+                "free",
+                "cached",
+                "buffers",
+                "app",
+                "used"
+            ]
+        }
+    ],
+    "collectors": [
+        {
+            "name": "console",
+            "enable": true
+        },
+        {
+            "name": "yandex",
+            "enable": false,
+            "parameters": {
+                "iss": "",
+                "kid": "",
+                "folderId": ""
+            }
+        }
+    ]
+}
