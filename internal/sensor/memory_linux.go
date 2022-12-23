@@ -27,11 +27,15 @@ func (memory *Memory) Metrics(memoryMetrics []string) (result metric.Metrics, er
 	memory.metrics = memoryMetrics
 	memory.values = make(map[string]int64)
 
+	re := make([]*regexp.Regexp, 4)
+	re[0] = regexp.MustCompile(`^MemTotal:\s*(\d+)\s*kB$`)
+	re[1] = regexp.MustCompile(`^MemFree:\s+(\d+)\s*kB$`)
+	re[2] = regexp.MustCompile(`^Cached:\s+(\d+)\s*kB$`)
+	re[3] = regexp.MustCompile(`^Buffers:\s+(\d+)\s*kB$`)
+
 	lines := bytes.Split(data, []byte{'\n'})
 	for _, line := range lines {
-		re := regexp.MustCompile(`^MemTotal:\s*(\d+)\s*kB$`)
-
-		res := re.FindAllSubmatch(line, -1)
+		res := re[0].FindAllSubmatch(line, -1)
 		if len(res) > 0 {
 			value, err := strconv.ParseInt(string(res[0][1]), 10, 64)
 			if err != nil {
@@ -41,9 +45,7 @@ func (memory *Memory) Metrics(memoryMetrics []string) (result metric.Metrics, er
 			memory.values["total"] = 1024 * value
 		}
 
-		re = regexp.MustCompile(`^MemFree:\s+(\d+)\s*kB$`)
-
-		res = re.FindAllSubmatch(line, -1)
+		res = re[1].FindAllSubmatch(line, -1)
 		if len(res) > 0 {
 			value, err := strconv.ParseInt(string(res[0][1]), 10, 64)
 			if err != nil {
@@ -53,9 +55,7 @@ func (memory *Memory) Metrics(memoryMetrics []string) (result metric.Metrics, er
 			memory.values["free"] = 1024 * value
 		}
 
-		re = regexp.MustCompile(`^Cached:\s+(\d+)\s*kB$`)
-
-		res = re.FindAllSubmatch(line, -1)
+		res = re[2].FindAllSubmatch(line, -1)
 		if len(res) > 0 {
 			value, err := strconv.ParseInt(string(res[0][1]), 10, 64)
 			if err != nil {
@@ -65,9 +65,7 @@ func (memory *Memory) Metrics(memoryMetrics []string) (result metric.Metrics, er
 			memory.values["cached"] = 1024 * value
 		}
 
-		re = regexp.MustCompile(`^Buffers:\s+(\d+)\s*kB$`)
-
-		res = re.FindAllSubmatch(line, -1)
+		res = re[3].FindAllSubmatch(line, -1)
 		if len(res) > 0 {
 			value, err := strconv.ParseInt(string(res[0][1]), 10, 64)
 			if err != nil {
